@@ -1335,10 +1335,10 @@ static bool parse_pipe_table(Scanner *s, TSLexer *lexer,
         while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
             advance(s, lexer);
         }
+        // a delimiter cell needs at least one minus, so an empty cell means
+        // this is not a delimiter row
         if (lexer->lookahead == '|') {
-            delimiter_cell_count++;
-            advance(s, lexer);
-            continue;
+            return false;
         }
         if (lexer->lookahead == ':') {
             advance(s, lexer);
@@ -1365,7 +1365,7 @@ static bool parse_pipe_table(Scanner *s, TSLexer *lexer,
         }
         if (lexer->lookahead == '|') {
             if (!had_one_minus) {
-                delimiter_cell_count++;
+                return false;
             }
             advance(s, lexer);
             continue;

@@ -202,3 +202,58 @@ Example 205 - https://github.github.com/gfm/#example-205
       (pipe_table_row
         (pipe_table_cell)
         (pipe_table_cell)))))
+
+================================================================================
+Row of empty cells in a one column table
+================================================================================
+| a |
+| - |
+| 1 |
+|  |
+| 2 |
+
+--------------------------------------------------------------------------------
+
+(document
+  (section
+    (pipe_table
+      (pipe_table_header
+        (pipe_table_cell))
+      (pipe_table_delimiter_row
+        (pipe_table_delimiter_cell))
+      (pipe_table_row
+        (pipe_table_cell))
+      (pipe_table_row
+        (pipe_table_cell))
+      (pipe_table_row
+        (pipe_table_cell)))))
+
+================================================================================
+Row of empty cells in a two column table
+================================================================================
+| a | b |
+| --- | --- |
+| 1 | 1 |
+|  |  |
+| 2 | 2 |
+
+--------------------------------------------------------------------------------
+
+(document
+  (section
+    (pipe_table
+      (pipe_table_header
+        (pipe_table_cell)
+        (pipe_table_cell))
+      (pipe_table_delimiter_row
+        (pipe_table_delimiter_cell)
+        (pipe_table_delimiter_cell))
+      (pipe_table_row
+        (pipe_table_cell)
+        (pipe_table_cell))
+      (pipe_table_row
+        (pipe_table_cell)
+        (pipe_table_cell))
+      (pipe_table_row
+        (pipe_table_cell)
+        (pipe_table_cell)))))
