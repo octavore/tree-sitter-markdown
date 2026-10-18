@@ -257,3 +257,34 @@ Row of empty cells in a two column table
       (pipe_table_row
         (pipe_table_cell)
         (pipe_table_cell)))))
+
+================================================================================
+#230 - Zero-width cells
+================================================================================
+| a | b | c |
+|---|---|---|
+| x || z |
+||||
+| 1 | 2 | 3 |
+
+--------------------------------------------------------------------------------
+
+(document
+  (section
+    (pipe_table
+      (pipe_table_header
+        (pipe_table_cell)
+        (pipe_table_cell)
+        (pipe_table_cell))
+      (pipe_table_delimiter_row
+        (pipe_table_delimiter_cell)
+        (pipe_table_delimiter_cell)
+        (pipe_table_delimiter_cell))
+      (pipe_table_row
+        (pipe_table_cell)
+        (pipe_table_cell))
+      (pipe_table_row)
+      (pipe_table_row
+        (pipe_table_cell)
+        (pipe_table_cell)
+        (pipe_table_cell)))))

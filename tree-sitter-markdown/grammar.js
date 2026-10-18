@@ -451,15 +451,16 @@ module.exports = grammar({
                 )),
                 choice(
                     seq(
+                        // A zero-width cell between two pipes has no node.
                         repeat1(prec.right(seq(
-                            choice(
+                            optional(choice(
                                 seq(
                                     optional($._whitespace),
                                     $.pipe_table_cell,
                                     optional($._whitespace)
                                 ),
                                 alias($._whitespace, $.pipe_table_cell)
-                            ),
+                            )),
                             '|',
                         ))),
                         optional($._whitespace),
