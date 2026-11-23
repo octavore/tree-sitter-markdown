@@ -283,15 +283,15 @@ static unsigned serialize(Scanner *s, char *buffer) {
     buffer[size++] = (char)s->indentation;
     buffer[size++] = (char)s->column;
     buffer[size++] = (char)s->fenced_code_block_delimiter_length;
+    // Block entries are written as one byte each.
+    // Entries that do not fit in the buffer are dropped.
+    // Very deep nesting loses state instead of overflowing.
     size_t blocks_count = s->open_blocks.size;
-    size_t max_blocks_count = (TREE_SITTER_SERIALIZATION_BUFFER_SIZE - size) / sizeof(Block);
-    if (blocks_count > max_blocks_count) {
-        blocks_count = max_blocks_count;
+    if (blocks_count > TREE_SITTER_SERIALIZATION_BUFFER_SIZE - size) {
+        blocks_count = TREE_SITTER_SERIALIZATION_BUFFER_SIZE - size;
     }
-    if (blocks_count > 0) {
-        memcpy(&buffer[size], s->open_blocks.items,
-               blocks_count * sizeof(Block));
-        size += blocks_count * sizeof(Block);
+    for (size_t i = 0; i < blocks_count; i++) {
+        buffer[size++] = (char)s->open_blocks.items[i];
     }
     return size;
 }
@@ -313,10 +313,8 @@ static void deserialize(Scanner *s, const char *buffer, unsigned length) {
         s->indentation = (uint8_t)buffer[size++];
         s->column = (uint8_t)buffer[size++];
         s->fenced_code_block_delimiter_length = (uint8_t)buffer[size++];
-        size_t blocks_size = length - size;
-        if (blocks_size > 0) {
-            size_t blocks_count = blocks_size / sizeof(Block);
-
+        size_t blocks_count = length - size;
+        if (blocks_count > 0) {
             // ensure open blocks has enough room
             if (s->open_blocks.capacity < blocks_count) {
               size_t capacity = roundup_32(blocks_count);
@@ -326,7 +324,9 @@ static void deserialize(Scanner *s, const char *buffer, unsigned length) {
               s->open_blocks.items = tmp;
               s->open_blocks.capacity = capacity;
             }
-            memcpy(s->open_blocks.items, &buffer[size], blocks_size);
+            for (size_t i = 0; i < blocks_count; i++) {
+                s->open_blocks.items[i] = (Block)(uint8_t)buffer[size + i];
+            }
             s->open_blocks.size = blocks_count;
         }
     }
